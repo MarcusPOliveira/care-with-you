@@ -1,6 +1,6 @@
 import * as sdk from 'node-appwrite'
 
-const getEnvVariables = () => {
+export const getEnvVariables = () => {
   return {
     projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
     apiKey: process.env.NEXT_PUBLIC_API_KEY,
