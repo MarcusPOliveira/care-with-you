@@ -5,8 +5,7 @@ import { ID } from 'node-appwrite'
 import { databases, getEnvVariables } from '@/lib/appwrite.config'
 import { parseStringify } from '@/lib/utils'
 
-const { bucketId, databaseId, appointmentCollectionId, endpoint, projectId } =
-  getEnvVariables()
+const { databaseId, appointmentCollectionId } = getEnvVariables()
 
 export const createAppointment = async (
   appointment: CreateAppointmentParams,
