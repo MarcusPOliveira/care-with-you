@@ -11,14 +11,14 @@ export default async function Register({
 
   return (
     <div className="flex h-screen max-h-screen">
-      <section className="remove-scrollbar container">
+      <section className="container remove-scrollbar">
         <div className="sub-container max-w-[860px] flex-1 flex-col py-10">
           <Image
             src="/assets/icons/logo-full.svg"
             alt="patient"
             width={1000}
             height={1000}
-            className="mb-12 h-10 w-fit"
+            className="h-10 mb-12 w-fit"
           />
 
           <RegisterForm user={user} />

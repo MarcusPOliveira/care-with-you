@@ -24,7 +24,7 @@ export const PatientFormValidation = z.object({
       'Número de telefone inválido',
     ),
   birthDate: z.coerce.date(),
-  gender: z.enum(['Male', 'Female', 'Other'], {
+  gender: z.enum(['Masculino', 'Feminino', 'Outro'], {
     required_error: 'Gênero é obrigatório',
   }),
   address: z
@@ -42,10 +42,10 @@ export const PatientFormValidation = z.object({
       50,
       'O nome do contato de emergência deve ter no máximo 50 caracteres',
     ),
-  emergencyContactNumber: z
+  emergencyContactPhone: z
     .string()
     .refine(
-      (emergencyContactNumber) => /^\+\d{10,15}$/.test(emergencyContactNumber),
+      (emergencyContactPhone) => /^\+\d{10,15}$/.test(emergencyContactPhone),
       'Número de telefone inválido',
     ),
   primaryPhysician: z.string().min(2, 'Selecione pelo menos um médico'),

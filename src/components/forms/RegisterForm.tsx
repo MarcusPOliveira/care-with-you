@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-import { createUser, registerPatient } from '@/actions/patient.actions'
+import { registerPatient } from '@/actions/patient.actions'
 import { FileUploader, SubmitButton } from '@/components'
 import {
   Doctors,
@@ -33,14 +33,15 @@ export const RegisterForm = ({ user }: { user: User }) => {
     resolver: zodResolver(PatientFormValidation),
     defaultValues: {
       ...PatientFormDefaultValues,
-      name: '',
-      email: '',
-      phone: '',
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
     },
   })
 
   const onSubmit = async (values: z.infer<typeof PatientFormValidation>) => {
     setIsLoading(true)
+    console.log('values', values)
 
     let formData
 
@@ -65,6 +66,8 @@ export const RegisterForm = ({ user }: { user: User }) => {
         identificationDocument: formData,
       }
 
+      console.log('patientData', patientData)
+
       const patient = await registerPatient(patientData)
       if (patient) router.push(`/patients/${user.$id}/new-appointment`)
     } catch (error) {
@@ -74,11 +77,13 @@ export const RegisterForm = ({ user }: { user: User }) => {
     }
   }
 
+  console.log('form.formState.errors', form.formState.errors)
+
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-12 flex-1"
+        className="flex-1 space-y-12"
       >
         <section className="space-y-4">
           <h1 className="header">Bem vindo! 👋 </h1>
@@ -88,7 +93,7 @@ export const RegisterForm = ({ user }: { user: User }) => {
         </section>
 
         <section className="space-y-6">
-          <div className="mb-9 space-y-1">
+          <div className="space-y-1 mb-9">
             <h2 className="sub-header">Informações pessoais</h2>
           </div>
         </section>
@@ -123,7 +128,7 @@ export const RegisterForm = ({ user }: { user: User }) => {
           />
         </div>
 
-        <div className="flex flex-col xl:items-end xl:justify-center gap-6 xl:flex-row">
+        <div className="flex flex-col gap-6 xl:items-end xl:justify-center xl:flex-row">
           <CustomFormField
             control={form.control}
             fieldType={FormFieldType.DATE_PICKER}
@@ -139,7 +144,7 @@ export const RegisterForm = ({ user }: { user: User }) => {
             renderSkeleton={(field) => (
               <FormControl>
                 <RadioGroup
-                  className="h-11 gap-6 flex xl:justify-between"
+                  className="flex gap-6 h-11 xl:justify-between"
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
@@ -193,7 +198,7 @@ export const RegisterForm = ({ user }: { user: User }) => {
         </div>
 
         <section className="space-y-6">
-          <div className="mb-9 space-y-1">
+          <div className="space-y-1 mb-9">
             <h2 className="sub-header">Informações médicas</h2>
           </div>
         </section>
@@ -207,13 +212,13 @@ export const RegisterForm = ({ user }: { user: User }) => {
         >
           {Doctors.map((doctor) => (
             <SelectItem key={doctor.name} value={doctor.name}>
-              <div className="flex cursor-pointer items-center gap-2">
+              <div className="flex items-center gap-2 cursor-pointer">
                 <Image
                   src={doctor.image}
                   alt={doctor.name}
                   width={32}
                   height={32}
-                  className="rounded-full border border-dark-500"
+                  className="border rounded-full border-dark-500"
                 />
                 <p>{doctor.name}</p>
               </div>
@@ -273,7 +278,7 @@ export const RegisterForm = ({ user }: { user: User }) => {
         </div>
 
         <section className="space-y-6">
-          <div className="mb-9 space-y-1">
+          <div className="space-y-1 mb-9">
             <h2 className="sub-header">Identificação e Verificação</h2>
           </div>
         </section>
@@ -313,7 +318,7 @@ export const RegisterForm = ({ user }: { user: User }) => {
         />
 
         <section className="space-y-6">
-          <div className="mb-9 space-y-1">
+          <div className="space-y-1 mb-9">
             <h2 className="sub-header">Consentimento e Privacidade</h2>
           </div>
         </section>
@@ -336,7 +341,6 @@ export const RegisterForm = ({ user }: { user: User }) => {
           name="privacyConsent"
           label="Eu concordo com a política de privacidade"
         />
-
         <SubmitButton isLoading={isLoading}>Confirmar</SubmitButton>
       </form>
     </Form>

@@ -1,3 +1,4 @@
+'use server'
 import { ID, Query } from 'node-appwrite'
 import { InputFile } from 'node-appwrite/file'
 
@@ -55,6 +56,8 @@ export const registerPatient = async ({
       file = await storage.createFile(bucketId!, ID.unique(), inputFile)
     }
 
+    console.log('file', file)
+
     const newPatient = await databases.createDocument(
       databaseId!,
       patientCollectionId!,
@@ -65,6 +68,8 @@ export const registerPatient = async ({
         ...patient,
       },
     )
+
+    console.log('newPatient', newPatient)
 
     return parseStringify(newPatient)
   } catch (error) {
