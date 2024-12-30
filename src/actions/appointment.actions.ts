@@ -1,5 +1,6 @@
 'use server'
 
+import { revalidatePath } from 'next/cache'
 import { ID, Query } from 'node-appwrite'
 
 import { databases, getEnvVariables } from '@/lib/appwrite.config'
@@ -80,5 +81,33 @@ export const getRecentAppointmentsList = async () => {
     return parseStringify(data)
   } catch (error) {
     console.error('error getRecentAppointmentsList', error)
+  }
+}
+
+export const updateAppointment = async ({
+  appointmentId,
+  userId,
+  appointment,
+  type,
+}: UpdateAppointmentParams) => {
+  try {
+    const updatedAppointment = await databases.updateDocument(
+      databaseId!,
+      appointmentCollectionId!,
+      appointmentId,
+      appointment,
+    )
+
+    if (!updatedAppointment) {
+      throw new Error('Appointment not found')
+    }
+
+    // TODO: SMS notification
+
+    revalidatePath('/admin')
+
+    return parseStringify(updatedAppointment)
+  } catch (error) {
+    console.error('error updateAppointment', error)
   }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 'use client'
 import { useState } from 'react'
 
@@ -7,7 +8,10 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-import { createAppointment } from '@/actions/appointment.actions'
+import {
+  createAppointment,
+  updateAppointment,
+} from '@/actions/appointment.actions'
 import { SubmitButton } from '@/components'
 import { Doctors } from '@/constants'
 import { getAppointmentSchema } from '@/lib/validation'
@@ -15,15 +19,24 @@ import { getAppointmentSchema } from '@/lib/validation'
 import { CustomFormField } from './CustomFormField'
 import { Form } from '../ui'
 import { FormFieldType } from './PatientForm'
+import { Appointment } from '../../../types/appwrite.types'
 import { SelectItem } from '../ui/select'
 
 interface Props {
   userId: string
   patientId: string
   type: 'create' | 'cancel' | 'schedule'
+  appointment?: Appointment
+  setIsOpen?: (isOpen: boolean) => void
 }
 
-export const AppointmentForm = ({ userId, patientId, type }: Props) => {
+export const AppointmentForm = ({
+  userId,
+  patientId,
+  type,
+  appointment,
+  setIsOpen,
+}: Props) => {
   const [isLoading, setIsLoading] = useState(false)
 
   const router = useRouter()
@@ -47,14 +60,17 @@ export const AppointmentForm = ({ userId, patientId, type }: Props) => {
       break
   }
 
+  console.log('appointment.schedule', appointment?.schedule)
   const form = useForm<z.infer<typeof AppointmentFormValidation>>({
     resolver: zodResolver(AppointmentFormValidation),
     defaultValues: {
-      primaryPhysician: '',
-      schedule: new Date(),
-      reason: '',
-      note: '',
-      cancellationReason: '',
+      primaryPhysician: appointment ? appointment.primaryPhysician : '',
+      schedule: appointment?.schedule
+        ? new Date(appointment.schedule)
+        : new Date(),
+      reason: appointment ? appointment.reason : '',
+      note: appointment ? appointment.note : '',
+      cancellationReason: appointment?.cancellationReason || '',
     },
   })
 
@@ -96,6 +112,25 @@ export const AppointmentForm = ({ userId, patientId, type }: Props) => {
             `/patients/${userId}/new-appointment/success?appointmentId=${appointment?.$id}`,
           )
         }
+      } else {
+        const appointmentToUpdate = {
+          userId,
+          appointmentId: appointment?.$id!,
+          appointment: {
+            primaryPhysician: values?.primaryPhysician,
+            schedule: new Date(values?.schedule),
+            status: status as Status,
+            cancellationReason: values?.cancellationReason,
+          },
+          type,
+        }
+
+        const updatedAppointment = await updateAppointment(appointmentToUpdate)
+
+        if (updatedAppointment) {
+          setIsOpen && setIsOpen(false)
+          form.reset()
+        }
       }
     } catch (error) {
       console.error('error onSubmit', error)
@@ -109,12 +144,14 @@ export const AppointmentForm = ({ userId, patientId, type }: Props) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 space-y-6">
-        <section className="mb-12 space-y-4">
-          <h1 className="header">Novo agendamento 🗓️ </h1>
-          <p className="text-dark-700">
-            Preencha os campos abaixo para agendar sua consulta.
-          </p>
-        </section>
+        {type === 'create' && (
+          <section className="mb-12 space-y-4">
+            <h1 className="header">Novo agendamento 🗓️ </h1>
+            <p className="text-dark-700">
+              Preencha os campos abaixo para agendar sua consulta.
+            </p>
+          </section>
+        )}
 
         {type !== 'cancel' && (
           <>
@@ -144,7 +181,7 @@ export const AppointmentForm = ({ userId, patientId, type }: Props) => {
             <CustomFormField
               control={form.control}
               fieldType={FormFieldType.DATE_PICKER}
-              name="scheduleDate"
+              name="schedule"
               label="Data da consulta"
               showTimeSelect
               dateFormat="dd/MM/yyyy HH:mm"

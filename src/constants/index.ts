@@ -82,3 +82,9 @@ export const StatusIcon = {
   pending: '/assets/icons/pending.svg',
   cancelled: '/assets/icons/cancelled.svg',
 }
+
+export const TranslatedStatus = {
+  scheduled: 'Agendado',
+  pending: 'Pendente',
+  cancelled: 'Cancelado',
+}
