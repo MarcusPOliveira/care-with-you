@@ -104,8 +104,8 @@ export const updateAppointment = async ({
 
     const smsMessage = `Olá, nós somos do Care With You.
       ${
-          type === 'schedule' ? `Sua consulta foi agendada para ${formatDateTime(appointment.schedule!).dateTime}` : 
-          `Lamentamos informar que sua consulta foi cancelada, devido ao seguinte motivo: ${appointment.cancellationReason}`
+          type === 'schedule' ? `Sua consulta com o(a) Dr. ${appointment?.primaryPhysician} foi agendada para ${formatDateTime(appointment.schedule!).dateTime}.` : 
+          `Lamentamos informar que sua consulta com o(a) Dr. ${appointment?.primaryPhysician} foi cancelada, devido ao seguinte motivo: ${appointment.cancellationReason}.`
       }
     `
     await sendSMSNotification(userId, smsMessage)
