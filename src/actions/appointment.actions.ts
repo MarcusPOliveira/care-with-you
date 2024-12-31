@@ -3,8 +3,8 @@
 import { revalidatePath } from 'next/cache'
 import { ID, Query } from 'node-appwrite'
 
-import { databases, getEnvVariables } from '@/lib/appwrite.config'
-import { parseStringify } from '@/lib/utils'
+import { databases, getEnvVariables, messaging } from '@/lib/appwrite.config'
+import { formatDateTime, parseStringify } from '@/lib/utils'
 
 import { Appointment } from '../../types/appwrite.types'
 
@@ -102,12 +102,33 @@ export const updateAppointment = async ({
       throw new Error('Appointment not found')
     }
 
-    // TODO: SMS notification
-
+    const smsMessage = `Olá, nós somos do Care With You.
+      ${
+          type === 'schedule' ? `Sua consulta foi agendada para ${formatDateTime(appointment.schedule!).dateTime}` : 
+          `Lamentamos informar que sua consulta foi cancelada, devido ao seguinte motivo: ${appointment.cancellationReason}`
+      }
+    `
+    await sendSMSNotification(userId, smsMessage)
+    
     revalidatePath('/admin')
 
     return parseStringify(updatedAppointment)
   } catch (error) {
     console.error('error updateAppointment', error)
+  }
+}
+
+export const sendSMSNotification = async (userId: string, content: string) => {
+  try {
+    const message = await messaging.createSms(
+      ID.unique(),
+      content,
+      [],
+      [userId],
+    )
+
+    return parseStringify(message)
+  } catch (error) {
+    console.error('error sendSMSNotification', error)
   }
 }
