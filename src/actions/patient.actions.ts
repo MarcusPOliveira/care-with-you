@@ -15,6 +15,7 @@ const { bucketId, databaseId, patientCollectionId, endpoint, projectId } =
 
 export const createUser = async (user: CreateUserParams) => {
   try {
+    console.log('user', user)
     const newUser = await users.create(
       ID.unique(),
       user.email,
@@ -22,6 +23,8 @@ export const createUser = async (user: CreateUserParams) => {
       undefined,
       user.name,
     )
+
+    return parseStringify(newUser)
   } catch (error: any) {
     console.error('error createUser', error)
     if (error && error?.code === 409) {

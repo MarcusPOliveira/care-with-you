@@ -31,9 +31,9 @@ export const PatientForm = () => {
   const form = useForm<z.infer<typeof UserFormValidation>>({
     resolver: zodResolver(UserFormValidation),
     defaultValues: {
-      name: 'Marcus Silva',
-      email: 'marcus@teste.com',
-      phone: '+5537998336732',
+      name: '',
+      email: '',
+      phone: '',
     },
   })
 
@@ -48,6 +48,7 @@ export const PatientForm = () => {
       const userData = { name, email, phone }
       console.log('userData', userData)
       const user = await createUser(userData)
+      console.log('user', user)
       if (user) router.push(`/patients/${user.$id}/register`)
     } catch (error) {
       console.error('error onSubmit', error)
@@ -94,7 +95,7 @@ export const PatientForm = () => {
           // iconAlt="phone"
         />
 
-        <SubmitButton isLoading={isLoading}>Acessar</SubmitButton>
+        <SubmitButton isLoading={isLoading}>Iniciar</SubmitButton>
       </form>
     </Form>
   )

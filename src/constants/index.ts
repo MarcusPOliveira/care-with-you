@@ -41,31 +41,31 @@ export const IdentificationTypes = [
 export const Doctors = [
   {
     image: '/assets/images/dr-green.png',
-    name: 'John Green',
+    name: 'João Verde',
   },
   {
     image: '/assets/images/dr-cameron.png',
-    name: 'Leila Cameron',
+    name: 'Leila Camargo',
   },
   {
     image: '/assets/images/dr-livingston.png',
-    name: 'David Livingston',
+    name: 'David Lima',
   },
   {
     image: '/assets/images/dr-peter.png',
-    name: 'Evan Peter',
+    name: 'Evan Pereira',
   },
   {
     image: '/assets/images/dr-powell.png',
-    name: 'Jane Powell',
+    name: 'Jane Paiva',
   },
   {
     image: '/assets/images/dr-remirez.png',
-    name: 'Alex Ramirez',
+    name: 'Alex Ramírez',
   },
   {
     image: '/assets/images/dr-lee.png',
-    name: 'Jasmine Lee',
+    name: 'Jasmin Oliveira',
   },
   {
     image: '/assets/images/dr-cruz.png',
@@ -73,9 +73,9 @@ export const Doctors = [
   },
   {
     image: '/assets/images/dr-sharma.png',
-    name: 'Hardik Sharma',
+    name: 'Henrique Souza',
   },
-]
+];
 
 export const StatusIcon = {
   scheduled: '/assets/icons/check.svg',
