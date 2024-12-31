@@ -75,7 +75,7 @@ export const Doctors = [
     image: '/assets/images/dr-sharma.png',
     name: 'Henrique Souza',
   },
-];
+]
 
 export const StatusIcon = {
   scheduled: '/assets/icons/check.svg',
