@@ -18,6 +18,8 @@ export default async function Success({
     (doctor) => doctor.name === appointment?.primaryPhysician,
   )
 
+  // Sentry.metrics.set('user_view_appointment_success', user?.name)
+
   return (
     <div className="flex h-screen max-h-screen px-[5%]">
       <div className="success-img">
